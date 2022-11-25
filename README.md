@@ -1,26 +1,59 @@
 # german_credit_r
-A sample data science project that uses a Logitistic Regression model built in R to predict default or pay off of loans from the German Credit dataset. Specifically, this example is used to demonstrate the creating of ModelOp Center(MOC)-compliant code.
+A sample data science project that uses a Logitistic Regression model built in R to predict default or pay off of loans from the German Credit dataset.
+
+## Running Locally
+For reproducability, we list platform and library info below, on which the model was trained:
+
+R version 4.1.2 (2021-11-01)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 22.04.1 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.10.0
+
+locale:
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8        LC_COLLATE=C.UTF-8    
+ [5] LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8    LC_PAPER=C.UTF-8       LC_NAME=C             
+ [9] LC_ADDRESS=C           LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] stringr_1.4.1      jsonlite_1.8.3     readr_2.1.3        yardstick_1.1.0    workflowsets_1.0.0
+ [6] workflows_1.1.2    tune_1.0.1         tidyr_1.2.1        tibble_3.1.8       rsample_1.1.0     
+[11] recipes_1.0.3      purrr_0.3.5        parsnip_1.0.3      modeldata_1.0.1    infer_1.0.3       
+[16] ggplot2_3.4.0      dplyr_1.0.10       dials_1.1.0        scales_1.2.1       broom_1.0.1       
+[21] tidymodels_1.0.0 
+
+
+To launch `german_credit.R`, run
+```
+R
+```
+
+Then in the R terminal,
+```
+source("german_credit.R")
+init()
+```
+
+To produce predictions and write them to file,
+```
+df_sample = readr::read_csv("./data/df_sample.csv", show_col_types = FALSE)
+write_csv(data.frame(score(df_sample)), "./data/score_output.csv")
+```
+
+To compute metrics on scored data and write them to file,
+```
+df_sample_scored = readr::read_csv("./data/df_sample_scored.csv", show_col_types = FALSE)
+write_csv(data.frame(metrics(df_sample_scored)), "./data/metrics_output.csv")  
+```
+
 
 ## Assets:
-- `german_credit.R` is the R code that houses the MOC-compliant code to predict and get metrics on data.
+- `german_credit.R` is the main R script that contains the code to predict and get metrics on data.
 - `trained_model.RData` is the trained model artifact that is loaded upon prediction. In our case, the artifact is a workflow built on top of a recipe that includes a few data cleaning steps and a call to a logistic regression model.
-- The datasets used for **scoring** are `df_baseline.json` and `df_sample.json`. These datasets represent raw data that would first be run into a batch scoring job. A sample of the outcome to the scoring job is provided in the `output_action_sample.json` file.
-- The datasets for **metrics** are `df_baseline_scored.json` and `df_sample_scored.json`. These datasets represent data that has appended the predictions from a scoring job. The columns are renamed to be compliant with MOC; `label` is renamed to `label_value` and the prediction column is named `score`.
-
-## Directions:
-1. For a **scoring** job, use the `df_baseline.json` or the `df_sample.json` files. The output is a JSON string object that has the orignal `label` and `.pred_class` for each input row. `output_action_sample.json` is the output of the scoring job run on the `df_sample.json` file. 
-2. For a **metrics** job, use the `df_baseline_scored.json` or the `df_sample_scored.json` files. THe output is a list of the relevant metrics (F1 score, Accuracy, Sensitivity, Specificity, Precision) for the classification model. `output_metrics_sample.json` is the output of the metrics job run on the `df_sample_scored.json` file.
-
-The input data to the **scoring** job is `df_sample.json`, which is a JSONS file (one-line JSON records). Here are the first three records:
-```json
-{"id":1,"duration_months":48,"credit_amount":5951,"installment_rate":2,"present_residence_since":2,"age_years":22,"number_existing_credits":1,"checking_status":"A12","credit_history":"A32","purpose":"A43","savings_account":"A61","present_employment_since":"A73","debtors_guarantors":"A101","property":"A121","installment_plans":"A143","housing":"A152","job":"A173","number_people_liable":1,"telephone":"A191","foreign_worker":"A201","gender":"female","label":"Default"}
-{"id":4,"duration_months":24,"credit_amount":4870,"installment_rate":3,"present_residence_since":4,"age_years":53,"number_existing_credits":2,"checking_status":"A11","credit_history":"A33","purpose":"A40","savings_account":"A61","present_employment_since":"A73","debtors_guarantors":"A101","property":"A124","installment_plans":"A143","housing":"A153","job":"A173","number_people_liable":2,"telephone":"A191","foreign_worker":"A201","gender":"male","label":"Default"}
-{"id":20,"duration_months":9,"credit_amount":2134,"installment_rate":4,"present_residence_since":4,"age_years":48,"number_existing_credits":3,"checking_status":"A14","credit_history":"A34","purpose":"A40","savings_account":"A61","present_employment_since":"A73","debtors_guarantors":"A101","property":"A123","installment_plans":"A143","housing":"A152","job":"A173","number_people_liable":1,"telephone":"A192","foreign_worker":"A201","gender":"male","label":"Pay Off"}
-```
-
-The input data to the **metrics** job is `df_sample_scored.json`, which is a JSONS file (one-line JSON records). Here are the first three records:
-```json
-{"label_value":"Default","score":"Pay Off","id":1,"duration_months":48,"credit_amount":5951,"installment_rate":2,"present_residence_since":2,"age_years":22,"number_existing_credits":1,"checking_status":"A12","credit_history":"A32","purpose":"A43","savings_account":"A61","present_employment_since":"A73","debtors_guarantors":"A101","property":"A121","installment_plans":"A143","housing":"A152","job":"A173","number_people_liable":1,"telephone":"A191","foreign_worker":"A201","gender":"female"}
-{"label_value":"Default","score":"Default","id":4,"duration_months":24,"credit_amount":4870,"installment_rate":3,"present_residence_since":4,"age_years":53,"number_existing_credits":2,"checking_status":"A11","credit_history":"A33","purpose":"A40","savings_account":"A61","present_employment_since":"A73","debtors_guarantors":"A101","property":"A124","installment_plans":"A143","housing":"A153","job":"A173","number_people_liable":2,"telephone":"A191","foreign_worker":"A201","gender":"male"}
-{"label_value":"Pay Off","score":"Pay Off","id":20,"duration_months":9,"credit_amount":2134,"installment_rate":4,"present_residence_since":4,"age_years":48,"number_existing_credits":3,"checking_status":"A14","credit_history":"A34","purpose":"A40","savings_account":"A61","present_employment_since":"A73","debtors_guarantors":"A101","property":"A123","installment_plans":"A143","housing":"A152","job":"A173","number_people_liable":1,"telephone":"A192","foreign_worker":"A201","gender":"male"}
-```
+- The datasets used for **scoring** are `./data/df_baseline.json` and `./data/df_sample.json`. These datasets represent raw data that would first be run into a batch scoring job. A sample of the outcome to the scoring job is provided in the `./data/score_output.csv` file.
+- The datasets for **metrics** are `./data/df_baseline_scored.json` and `./data/df_sample_scored.json`. These datasets represent data that have the predictions from a scoring job. A sample of the outcome to the merics job is provided in the `./data/metrics_output.csv` file.

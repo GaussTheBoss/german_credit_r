@@ -1,26 +1,31 @@
-# import libraries
+# Load libraries
 library(tidymodels)
 library(readr)
 
-# modelop.init
-begin <- function() {
-    # model <- read_rds("trained_model.rds")
+init <- function() {
+    # 
+    # Function to load saved model into global variable: model
+    # 
     load("trained_model.RData")
     model <<- logreg_fit
 }
 
-# modelop.score
-action <- function(data) {
+score <- function(data) {
+    # 
+    # Function to predict on input data (data.frame)
+    # 
     df <- data.frame(data, stringsAsFactors = F)
     preds <- predict(model, df)
     output <- list(label_value = df$label, score = preds$.pred_class)
-    emit(output)
+    return(output)
 }
 
-# modelop.metrics
 metrics <- function(data) {
+    # 
+    # Function to compute binary classification metrics on scored and labeled data
+    # 
     df <- data.frame(data)
     get_metrics <- metric_set(f_meas, accuracy, sensitivity, specificity, precision)
     output <- get_metrics(data = df, truth = as.factor(label_value), estimate = as.factor(score))
-    emit(output)
+    return(output)
 }

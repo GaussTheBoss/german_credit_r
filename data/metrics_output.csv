@@ -1,0 +1,6 @@
+.metric,.estimator,.estimate
+f_meas,binary,0.5517241379310344
+accuracy,binary,0.74
+sensitivity,binary,0.5333333333333333
+specificity,binary,0.8285714285714286
+precision,binary,0.5714285714285714
