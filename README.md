@@ -4,6 +4,7 @@ A sample data science project that uses a Logitistic Regression model built in R
 ## Running Locally
 For reproducability, we list platform and library info below, on which the model was trained:
 
+```
 R version 4.1.2 (2021-11-01)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 22.04.1 LTS
@@ -26,7 +27,7 @@ other attached packages:
 [11] recipes_1.0.3      purrr_0.3.5        parsnip_1.0.3      modeldata_1.0.1    infer_1.0.3       
 [16] ggplot2_3.4.0      dplyr_1.0.10       dials_1.1.0        scales_1.2.1       broom_1.0.1       
 [21] tidymodels_1.0.0 
-
+```
 
 To launch `german_credit.R`, run
 ```
